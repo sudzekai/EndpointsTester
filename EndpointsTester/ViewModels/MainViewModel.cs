@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Text;
 
 namespace EndpointsTester.ViewModels
 {
@@ -82,12 +83,13 @@ namespace EndpointsTester.ViewModels
 
             try
             {
+                var content = new StringContent(Body, Encoding.UTF8, "application/json");
                 response = SelectedMethod switch
                 {
                     "GET" => await client.GetAsync(Url),
-                    "POST" => await client.PostAsJsonAsync(Url, Body),
-                    "PUT" => await client.PutAsJsonAsync(Url, Body),
-                    "PATCH" => await client.PatchAsJsonAsync(Url, Body),
+                    "POST" => await client.PostAsync(Url, content),
+                    "PUT" => await client.PutAsync(Url, content),
+                    "PATCH" => await client.PatchAsync(Url, content),
                     "DELETE" => await client.DeleteAsync(Url),
                     _ => await client.GetAsync(Url)
                 };
