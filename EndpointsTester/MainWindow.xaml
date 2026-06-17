@@ -6,6 +6,6 @@
         xmlns:local="clr-namespace:EndpointsTester"
         xmlns:view="clr-namespace:EndpointsTester.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="615" Width="800">
+        Title="Endpoints Tester" Height="615" Width="800">
     <view:MainView/>
 </Window>
