@@ -112,33 +112,16 @@ namespace EndpointsTester.ViewModels
 
             Response = $"{(int)response.StatusCode} - {response.ReasonPhrase}";
 
-            switch (response.StatusCode)
-            {
-                case HttpStatusCode.OK:
-                case HttpStatusCode.Created:
-                case HttpStatusCode.Accepted:
-                    ResponseBrush = System.Windows.Media.Brushes.Green;
-                    break;
+            var code = ((int)response.StatusCode).ToString();
 
-                case HttpStatusCode.BadRequest:
-                case HttpStatusCode.Unauthorized:
-                case HttpStatusCode.Forbidden:
-                case HttpStatusCode.NotFound:
-                case HttpStatusCode.MethodNotAllowed:
-                    ResponseBrush = System.Windows.Media.Brushes.Orange;
-                    break;
-
-                case HttpStatusCode.InternalServerError:
-                case HttpStatusCode.BadGateway:
-                case HttpStatusCode.ServiceUnavailable:
-                case HttpStatusCode.GatewayTimeout:
-                    ResponseBrush = System.Windows.Media.Brushes.Red;
-                    break;
-
-                default:
-                    ResponseBrush = System.Windows.Media.Brushes.Gray;
-                    break;
-            }
+            if (code.StartsWith('2'))
+                ResponseBrush = System.Windows.Media.Brushes.Green;
+            else if (code.StartsWith('4'))
+                ResponseBrush = System.Windows.Media.Brushes.Orange;
+            else if (code.StartsWith('5'))
+                ResponseBrush = System.Windows.Media.Brushes.Red;
+            else
+                ResponseBrush = System.Windows.Media.Brushes.Gray;
         }
 
         public MainViewModel()
