@@ -2,16 +2,26 @@
 using CommunityToolkit.Mvvm.Input;
 using EndpointsTester.Base;
 using EndpointsTester.Models;
+using EndpointsTester.Utilities;
 using System.Collections.ObjectModel;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace EndpointsTester.ViewModels
 {
     partial class MainViewModel : ViewModelBase
     {
+        private JsonSerializerOptions _jsonOptions = new()
+        {
+            WriteIndented = true,
+            IndentSize = 4
+        };
+
         [ObservableProperty]
         private ObservableCollection<string> _methods =
             [
@@ -46,8 +56,10 @@ namespace EndpointsTester.ViewModels
         [ObservableProperty]
         private System.Windows.Media.Brush _responseBrush = System.Windows.Media.Brushes.Black;
 
+        private string _responseBody;
+
         [ObservableProperty]
-        private string _responseBody = "";
+        private RichTextBox _responseBodyContent = new();
 
         [ObservableProperty]
         private string _responseHeaders = "";
@@ -65,6 +77,25 @@ namespace EndpointsTester.ViewModels
             if (header is not null)
                 Headers.Remove(header);
         }
+        //[RelayCommand]
+        //private void CopyResponse()
+        //{
+        //    var sb = new StringBuilder();
+
+        //    foreach (var inline in ResponseBodyContent.Conteb)
+        //    {
+        //        if (inline is Run run)
+        //        {
+        //            sb.Append(run.Text);
+        //        }
+        //        else if (inline is LineBreak)
+        //        {
+        //            sb.AppendLine();
+        //        }
+        //    }
+
+        //    Clipboard.SetText(sb.ToString());
+        //}
 
         [RelayCommand]
         private async Task SendRequest()
@@ -84,15 +115,7 @@ namespace EndpointsTester.ViewModels
             try
             {
                 var content = new StringContent(Body, Encoding.UTF8, "application/json");
-                response = SelectedMethod switch
-                {
-                    "GET" => await client.GetAsync(Url),
-                    "POST" => await client.PostAsync(Url, content),
-                    "PUT" => await client.PutAsync(Url, content),
-                    "PATCH" => await client.PatchAsync(Url, content),
-                    "DELETE" => await client.DeleteAsync(Url),
-                    _ => await client.GetAsync(Url)
-                };
+                response = await SendRequest(client, response, content);
             }
             catch (Exception ex)
             {
@@ -101,8 +124,18 @@ namespace EndpointsTester.ViewModels
                 return;
             }
 
+            var raw = await response.Content.ReadAsStringAsync();
 
-            ResponseBody = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var node = JsonNode.Parse(raw);
+                _responseBody = node!.ToJsonString(_jsonOptions);
+                SetPrettyContent();
+            }
+            catch
+            {
+                SetPrettyContent();
+            }
 
             var allHeaders = response.Headers
                                      .Select(h => $"{h.Key}: {string.Join(", ", h.Value)}")
@@ -112,6 +145,11 @@ namespace EndpointsTester.ViewModels
 
             Response = $"{(int)response.StatusCode} - {response.ReasonPhrase}";
 
+            PrettifyResponseStatusCode(response);
+        }
+
+        private void PrettifyResponseStatusCode(HttpResponseMessage response)
+        {
             var code = ((int)response.StatusCode).ToString();
 
             if (code.StartsWith('2'))
@@ -124,10 +162,29 @@ namespace EndpointsTester.ViewModels
                 ResponseBrush = System.Windows.Media.Brushes.Gray;
         }
 
+        private async Task<HttpResponseMessage> SendRequest(HttpClient client, HttpResponseMessage response, StringContent content)
+        {
+            response = SelectedMethod switch
+            {
+                "GET" => await client.GetAsync(Url),
+                "POST" => await client.PostAsync(Url, content),
+                "PUT" => await client.PutAsync(Url, content),
+                "PATCH" => await client.PatchAsync(Url, content),
+                "DELETE" => await client.DeleteAsync(Url),
+                _ => await client.GetAsync(Url)
+            };
+            return response;
+        }
+
         public MainViewModel()
         {
             Headers.Add(new() { Name = "Authorization", Value = "Bearer token..." });
             Headers.Add(new() { Name = "Content-Type", Value = "application/json" });
+        }
+
+        public void SetPrettyContent()
+        {
+            ResponseBodyContent = JsonPrettifier.Format(_responseBody);
         }
     }
 }

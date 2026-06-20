@@ -11,8 +11,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="2*"/>
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
@@ -47,100 +46,104 @@
                               Margin="10,0,0,0"/>
                 </Grid>
             </Border>
-            
-            <Border Grid.Row="2"
-                    Padding="5"
-                    Margin="0,10,0,0"
-                    CornerRadius="5"
-                    BorderThickness="1"
-                    BorderBrush="Black">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                        
-                    <TextBlock Text="Заголовки"
-                               FontWeight="SemiBold"
-                               FontSize="18"/>
 
-                    <Border Padding="5"
-                            Grid.Row="1">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="auto"/>
-                            </Grid.RowDefinitions>
+            <Grid Grid.Row="2"
+                  Margin="0,10,0,0"
+                  ColumnDefinitions="*,*">
+                <Border Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Padding="5"
+                        CornerRadius="5"
+                        BorderThickness="1"
+                        BorderBrush="Black">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <ScrollViewer Margin="0,0,0,5" 
-                                          VerticalScrollBarVisibility="Auto">
-                                <ItemsControl ItemsSource="{Binding Headers}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <Grid Margin="0,0,0,5">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="3*"/>
-                                                    <ColumnDefinition Width="8*"/>
-                                                    <ColumnDefinition Width="1*"/>
-                                                </Grid.ColumnDefinitions>
+                        <TextBlock Text="Заголовки"
+                       FontWeight="SemiBold"
+                       FontSize="18"/>
 
-                                                <TextBox Grid.Column="0"
-                                                     Text="{Binding Name}"
-                                                     VerticalContentAlignment="Center"
-                                                     Margin="0,0,5,0"/>
+                        <Border Padding="5"
+                                Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto"/>
+                                </Grid.RowDefinitions>
 
-                                                <TextBox Grid.Column="1"
-                                                     Text="{Binding Value}"
-                                                     VerticalContentAlignment="Center"/>
+                                <ScrollViewer Margin="0,0,0,5" 
+                                  VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding Headers}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Margin="0,0,0,5">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3*"/>
+                                                        <ColumnDefinition Width="8*"/>
+                                                        <ColumnDefinition Width="1*"/>
+                                                    </Grid.ColumnDefinitions>
 
-                                                <Button Grid.Column="2"
-                                                    Content="✖"
-                                                    Margin="5,0,0,0"
-                                                    Command="{Binding DataContext.RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                                    CommandParameter="{Binding Name}"/>
-                                            </Grid>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
+                                                    <TextBox Grid.Column="0"
+                                             Text="{Binding Name}"
+                                             VerticalContentAlignment="Center"
+                                             Margin="0,0,5,0"/>
 
-                            <Button Content="+ Добавить"
-                                    Height="30"
-                                    Grid.Row="1"
-                                    Command="{Binding AddHeaderCommand}"/>
-                        </Grid>
-                    </Border>
-                </Grid>
-            </Border>
+                                                    <TextBox Grid.Column="1"
+                                             Text="{Binding Value}"
+                                             VerticalContentAlignment="Center"/>
 
+                                                    <Button Grid.Column="2"
+                                                            Content="✖"
+                                                            Margin="5,0,0,0"
+                                                            Command="{Binding DataContext.RemoveHeaderCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                                                            CommandParameter="{Binding Name}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
+                                <Button Content="+ Добавить"
+                            Height="30"
+                            Grid.Row="1"
+                            Command="{Binding AddHeaderCommand}"/>
+                            </Grid>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Column="0"
+                        Margin="0,0,5,0"
+                        Padding="5"
+                        CornerRadius="5"
+                        BorderThickness="1"
+                        BorderBrush="Black">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Text="Тело запроса"
+                       FontWeight="SemiBold"
+                       FontSize="18"/>
+
+                        <Border Grid.Row="1" 
+                                Padding="5">
+                            <TextBox Text="{Binding Body}"
+                                     TextWrapping="NoWrap"
+                                     AcceptsReturn="True"
+                                     FontFamily="Cascadia Code"
+                                     KeyDown="BodyTextBox_KeyDown"/>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        
             <Border Grid.Row="3"
-                    Padding="5"
-                    Margin="0,10,0,0"
-                    CornerRadius="5"
-                    BorderThickness="1"
-                    BorderBrush="Black">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock Text="Тело запроса"
-                               FontWeight="SemiBold"
-                               FontSize="18"/>
-
-                    <Border Grid.Row="1" 
-                            Padding="5">
-                        <TextBox Text="{Binding Body}"
-                                 TextWrapping="Wrap"
-                                 AcceptsReturn="True"
-                                 FontFamily="Consolas"
-                                 KeyDown="BodyTextBox_KeyDown"/>
-                    </Border>
-                </Grid>
-            </Border>
-
-            <Border Grid.Row="4"
                     Margin="0,10,0,0"
                     Padding="5">
                 <Button Content="Отправить запрос"
@@ -148,7 +151,7 @@
                         Height="30"/>
             </Border>
             
-            <Border Grid.Row="5"
+            <Border Grid.Row="4"
                     Padding="5"
                     Margin="0,10,0,0"
                     CornerRadius="5"
@@ -164,13 +167,14 @@
                         <TextBlock Text="Ответ"
                                    FontWeight="SemiBold"
                                    FontSize="18"/>
+
                         <TextBlock Margin="5,0,0,0" 
-                                   Grid.Column="1"
-                                   Text="{Binding Response}"
-                                   Foreground="{Binding ResponseBrush}"
-                                   FontWeight="SemiBold"
-                                   TextWrapping="Wrap"
-                                   FontSize="18"/>
+                                 Grid.Column="1"
+                                 Text="{Binding Response}"
+                                 Foreground="{Binding ResponseBrush}"
+                                 FontWeight="SemiBold"
+                                 TextWrapping="Wrap"
+                                 FontSize="18"/>
                     </Grid>
          
 
@@ -199,8 +203,10 @@
                                         BorderThickness="1"
                                         BorderBrush="#ccc">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                        <TextBlock Text="{Binding ResponseHeaders}"
-                                                   TextWrapping="Wrap"/>
+                                        <TextBox Text="{Binding ResponseHeaders}"
+                                                 BorderThickness="0"
+                                                 IsReadOnly="True"
+                                                 TextWrapping="Wrap"/>
                                     </ScrollViewer>
                                 </Border>
                             </Grid>
@@ -212,9 +218,16 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <TextBlock Text="Тело"
-                                           FontWeight="SemiBold"
-                                           FontSize="16"/>
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="Тело"
+                                                FontWeight="SemiBold"
+                                                FontSize="16"/>
+                                    <Button Content="Скопировать"
+                                            Grid.Column="1"
+                                            Command="{Binding CopyResponseCommand}"
+                                            Margin="10,0,0,0"/>
+                                </Grid>
+               
                                 
                                 <Border Grid.Row="1"
                                         Margin="0,5,0,0"
@@ -222,15 +235,13 @@
                                         BorderThickness="1"
                                         BorderBrush="#ccc">
                                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                        <TextBlock Text="{Binding ResponseBody}"
-                                                   TextWrapping="Wrap"/>
+                                        <ContentPresenter Content="{Binding ResponseBodyContent}"/>
                                     </ScrollViewer>
                                 </Border>
                             </Grid>
                         </Grid>
                     </Border>
                 </Grid>
-                
             </Border>
         </Grid>
     </Border>
