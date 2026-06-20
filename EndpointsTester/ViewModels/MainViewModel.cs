@@ -77,25 +77,32 @@ namespace EndpointsTester.ViewModels
             if (header is not null)
                 Headers.Remove(header);
         }
-        //[RelayCommand]
-        //private void CopyResponse()
-        //{
-        //    var sb = new StringBuilder();
 
-        //    foreach (var inline in ResponseBodyContent.Conteb)
-        //    {
-        //        if (inline is Run run)
-        //        {
-        //            sb.Append(run.Text);
-        //        }
-        //        else if (inline is LineBreak)
-        //        {
-        //            sb.AppendLine();
-        //        }
-        //    }
+        [RelayCommand]
+        private void CopyResponse()
+        {
+            var sb = new StringBuilder();
 
-        //    Clipboard.SetText(sb.ToString());
-        //}
+            var document = ResponseBodyContent.Document;
+
+            foreach (var block in document.Blocks)
+            {
+                if (block is Paragraph paragraph)
+                {
+                    foreach (var inline in paragraph.Inlines)
+                    {
+                        if (inline is Run run)
+                            sb.Append(run.Text);
+                        else if (inline is LineBreak)
+                            sb.AppendLine();
+                    }
+
+                    sb.AppendLine();
+                }
+            }
+
+            Clipboard.SetText(sb.ToString());
+        }
 
         [RelayCommand]
         private async Task SendRequest()
